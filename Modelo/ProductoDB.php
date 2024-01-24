@@ -49,7 +49,7 @@ include_once 'ProveedorDB.php';
             $sentencia->execute();
 
             while ($productoDB = $sentencia->fetch()){
-                $proveedor = ProveedorDB::getProveedor($productoDB['codigoProveedor']);
+                $proveedor = ProveedorDB::get($productoDB['codigoProveedor']);
                 $producto = new Producto(
                     $productoDB['codigoProducto'],
                     $productoDB['descripcion'],
@@ -64,17 +64,17 @@ include_once 'ProveedorDB.php';
         }
 
         //Eliminar producto
-        public static function delete($idProducto){
+        public static function delete($codigoProducto){
             // Establecemos conexión con la BBDD
             include_once '../Conexion/conexion.php';
             $conexion = Conexion::obtenerConexion();
         
             // Eliminar producto
-            $sql = "DELETE FROM productos WHERE idProducto = :idProducto";
+            $sql = "DELETE FROM producto WHERE codigoProducto = :codigoProducto";
             $sentencia = $conexion->prepare($sql);
 
             $result = $sentencia->execute([
-                "idProducto" => $idProducto,
+                "codigoProducto" => $codigoProducto,
             ]);
         
             return $result; // Devuelve true si la operación fue exitosa, false si falló
@@ -87,7 +87,7 @@ include_once 'ProveedorDB.php';
             $conexion = Conexion::obtenerConexion();
         
             // Modificar producto existente
-            $sql = "UPDATE productos SET descripcion = :descripcion, precio = :precio, stock = :stock WHERE idProducto = :idProducto";
+            $sql = "UPDATE productos SET descripcion = :descripcion, precio = :precio, stock = :stock WHERE codigoProducto = :codigoProducto";
             $sentencia = $conexion->prepare($sql);
 
             $result = $sentencia->execute([
@@ -108,7 +108,7 @@ include_once 'ProveedorDB.php';
             $conexion = Conexion::obtenerConexion();
         
             // Consulta para obtener productos por debajo del stock mínimo
-            $sql = "SELECT * FROM productos WHERE stock < :stockMinimo";
+            $sql = "SELECT * FROM productos WHERE stock < :stockMinimo AND codigoProveedor = :codigoProveedor"; 
             $sentencia = $conexion->prepare($sql);
             
             $codigoProveedor = $proveedor->getCodigoProveedor();
@@ -122,7 +122,7 @@ include_once 'ProveedorDB.php';
             $productos = [];
 
             while ($productoDB = $sentencia->fetch()){
-                $proveedor = ProveedorDB::getProveedor($productoDB['codigoProveedor']);
+                $proveedor = ProveedorDB::get($productoDB['codigoProveedor']);
                 $producto = new Producto(
                     $productoDB['codigoProducto'],
                     $productoDB['descripcion'],
@@ -151,7 +151,7 @@ include_once 'ProveedorDB.php';
             $sentencia->execute();
 
             while ($productoDB = $sentencia->fetch()){
-                $proveedor = ProveedorDB::getProveedor($productoDB['codigoProveedor']);
+                $proveedor = ProveedorDB::get($productoDB['codigoProveedor']);
                 $producto = new Producto(
                     $productoDB['codigoProducto'],
                     $productoDB['descripcion'],

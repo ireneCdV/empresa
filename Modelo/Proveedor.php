@@ -3,7 +3,7 @@
         private string $codigoProveedor;
         private string $nombre;
         private string $apellidos;
-        private int $telefono;
+        private string $telefono;
         private string $pwd;
         private array $misProductos;
 

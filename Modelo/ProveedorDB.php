@@ -4,39 +4,49 @@ include_once 'Proveedor.php';
 include_once 'ProveedorDB.php';
 
     class ProveedorDB{
+        public static function InicioSesion($codigoProveedor){
+            // Establecemos conexión con la BBDD
+            include_once '../Conexion/conexion.php';
+            $conexion = Conexion::obtenerConexion();
+        
+            $sql = "SELECT * FROM proveedor WHERE codigoProveedor = ?";
+            $sentencia = $conexion->prepare($sql);
+            $sentencia->execute([$codigoProveedor]);
+        
+            $ProveedorDB = $sentencia->fetch(); // Fila de la base de datos leída.
+            
+            return $ProveedorDB; // Devuelve la fila del usuario o false si no se encontró
+        }
+
         //Funcion para comprabar que inicia sesion
-        public static function get($codigoProveedor, Producto $producto) {
+        public static function get(string $codigoProveedor) :Proveedor {
             // Establecemos conexión con la BBDD
             include_once '../Conexion/conexion.php';
             $conexion = Conexion::obtenerConexion();
         
             $sql = "SELECT * FROM proveedor WHERE codigoProveedor = :codigoProveedor";
             $sentencia = $conexion->prepare($sql);
-            $sentencia->execute([$codigoProveedor]);
-        
-            $proveedorBD = $sentencia->fetch(PDO::FETCH_ASSOC); // Obtener la fila como un array asociativo
-    
-            if (!$proveedorBD) {
-                return false; // Devuelve false si no se encontró el proveedor
-            }
-    
-            // Construir el objeto Proveedor a partir del array obtenido de la base de datos
-            $proveedor = new Proveedor();
-            $proveedor->setCodigoProveedor($proveedorBD['codigoProveedor'])
-                      ->setDescripcion($proveedorBD['descripcion'])
-                      ->setPrecio($proveedorBD['precio'])
-                      ->setStock($proveedorBD['stock'])
-                      ->setMisProductos(json_decode($proveedorBD['misProductos'], true));
-    
-            return $proveedor;
+            $sentencia->execute(['codigoProveedor' => $codigoProveedor]);
+
+            $proveedor = $sentencia->fetch(PDO::FETCH_ASSOC);
+
+            // Montar el proveedor
+            $proveedorDevolver = new Proveedor(
+                $proveedor['codigoProveedor'], 
+                $proveedor['nombre'], 
+                $proveedor['apellidos'], 
+                $proveedor['telefono'],
+                $proveedor['pwd']);
+
+            return $proveedorDevolver;
         }
         
         //Funcion para registar un nuevo proveedor
         public static function add($codigoProveedor, $nombre, $apellidos, $telefono, $pwd){
-            if (self::get($codigoProveedor)) {
+              if (self::InicioSesion($codigoProveedor)) {
                 // El codigo de proveedor ya está en uso
                 return false;
-            }
+            }  
 
             // Establecemos conexión con la BBDD
             include_once '../Conexion/conexion.php';
@@ -46,6 +56,7 @@ include_once 'ProveedorDB.php';
             $sql = "INSERT INTO proveedor(codigoProveedor,nombre, apellidos, telefono, pwd) VALUES(:codigoProveedor, :nombre, :apellidos,:telefono, :pwd)";
             $sentencia = $conexion->prepare($sql);
             $result = $sentencia->execute([
+                "codigoProveedor" => $codigoProveedor,
                 "nombre" => $nombre,
                 "apellidos" => $apellidos,
                 "telefono" => $telefono,
