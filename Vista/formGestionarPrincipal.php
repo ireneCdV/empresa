@@ -10,11 +10,12 @@
 
 <h2>¿Que desea gestionar?</h2>
 
-    <form action="../Controlador/controlaIndex.php" method="post">
+    <form action="../Controlador/controlaPrincipal.php" method="post">
         <input type="submit" name="opciones_proveedor" value="Gestionar Proveedor">
         <input type="submit" name="opciones_productos" value="Gestionar Productos">
-        <!-- <input type="submit" name="cerrar_sesion" value="Cerrar sesion"> -->
-        <!-- Botón de cerrar sesión con una imagen -->
+    </form>
+
+    <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <button type="submit" name="cerrar_sesion">
             <img src="../img/cerrarSesion.png" alt="Cerrar sesión">
         </button>

@@ -67,26 +67,24 @@ include_once 'ProveedorDB.php';
         }
 
         //Funcion para modificar un proveedor existente
-        public static function update($codigoProveedor, $nombre, $apellidos, $telefono, $pwd){
-            // Verificar si el proveedor existe
-            if (!self::get($codigoProveedor)) {
-                // El proveedor no existe, no se puede modificar
-                return false;
-            }
-        
+        public static function update(Proveedor $proveedor){
+                   
             // Establecemos conexión con la BBDD
             include_once '../Conexion/conexion.php';
             $conexion = Conexion::obtenerConexion();
         
             // Modificar proveedor existente
-            $sql = "UPDATE proveedor SET nombre = :nombre, apellidos = :apellidos, telefono = :telefono WHERE codigoProveedor = :codigoProveedor";
+            $sql = "UPDATE proveedor SET pwd = :pwd, nombre = :nombre, apellidos = :apellidos, telefono = :telefono WHERE codigoProveedor = :codigoProveedor";            
             $sentencia = $conexion->prepare($sql);
-            $result = $sentencia->execute([
-                "nombre" => $nombre,
-                "apellidos" => $apellidos,
-                "telefono" => $telefono,
-            ]);
-        
+
+            $sentencia->bindValue(":pwd", $proveedor->getPwd());
+            $sentencia->bindValue(":nombre", $proveedor->getNombre());
+            $sentencia->bindValue(":apellidos", $proveedor->getApellidos());
+            $sentencia->bindValue(":telefono", $proveedor->getTelefono());
+            $sentencia->bindValue(":codigoProveedor", $proveedor->getCodigoProveedor());
+
+            $result = $sentencia->execute();
+
             return $result; // Devuelve true si la operación fue exitosa, false si falló
         }
 
@@ -143,6 +141,28 @@ include_once 'ProveedorDB.php';
             $proveedor->setProductos($productos);
 
             return $proveedor;
+        }
+
+
+        public static function cerrarSesion() {
+            // Destruye todas las variables de sesión
+            $_SESSION = array();
+        
+            // Si se desea destruir la sesión completamente, borra también la cookie de la sesión.
+            if (ini_get("session.use_cookies")) {
+                $params = session_get_cookie_params();
+                setcookie(session_name(), '', time() - 42000,
+                    $params["path"], $params["domain"],
+                    $params["secure"], $params["httponly"]
+                );
+            }
+        
+            // Finalmente, destruye la sesión
+            session_destroy();
+        
+            // Redirige al usuario a index.php
+            header("Location: ../Vista/formindex.php");
+            exit(); // Asegura que el script se detenga después de la redirección
         }
         
         

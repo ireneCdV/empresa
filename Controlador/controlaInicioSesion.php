@@ -1,4 +1,5 @@
 <?php
+session_start();
 include_once '../Modelo/ProveedorDB.php';
 
 if($_SERVER["REQUEST_METHOD"]=="POST"){
@@ -8,13 +9,13 @@ if($_SERVER["REQUEST_METHOD"]=="POST"){
     $result = ProveedorDB::InicioSesion($codigoProveedor, $pwd);
 
     if ($result && password_verify($pwd,$result['pwd'])) {
-        echo "USUARIO CORRECTAMENTE LOGUEADO";
 
-        /* // Mostrar un botón para redirigir a otra página
-        echo '<form action="../Vista/formIndex.php" method="get">';
-        echo '<br>';
-        echo '<input type="submit" value="Pulse aquí para ir al juego">';
-        echo '</form>'; */
+        //Mantener sesion iniciada 
+        $_SESSION['codigoProveedor'] = $result['codigoProveedor'];
+
+        header("Location: ../Vista/formGestionarPrincipal.php");
+        exit();
+       
 
     } else {
         echo "El usuario introducido no existe en la BBDD";

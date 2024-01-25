@@ -8,12 +8,12 @@
         private array $misProductos;
 
         // Constructor
-        public function __construct(string $codigoProveedor, string $pwd, string $nombre, string $apellidos, string $telefono) {
+        public function __construct(string $codigoProveedor, string $nombre, string $apellidos, string $telefono, string $pwd) {
                 $this->codigoProveedor = $codigoProveedor;
-                $this->pwd = $pwd;
                 $this->nombre = $nombre;
                 $this->apellidos = $apellidos;
                 $this->telefono = $telefono;
+                $this->pwd = $pwd;
                 $this->misProductos = [];
         }
         
