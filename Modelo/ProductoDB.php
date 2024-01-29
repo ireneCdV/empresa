@@ -3,29 +3,26 @@ include_once 'Producto.php';
 include_once 'Proveedor.php';
 include_once 'ProveedorDB.php';
 
-    class ProductorDB{
+    class ProductoDB{
 
-        //Añadir producto
-        public static function add(Producto $producto, Producto $miProveedor):bool{
-            //Establecemos conexion con la BBDD
+        public static function add(Producto $producto, Proveedor $miProveedor): bool {
+            // Establecemos conexión con la BBDD
             include_once '../Conexion/conexion.php';
             $conexion = Conexion::obtenerConexion();
-
-            //Preparar la consultaSQL
-            $sql = "INSERT INTO productos (codigoPoducto,descripcion,precio,stock) VALUES (:codigoPoducto, :descripcion, :precio, :stock)";
-            $sentencia = $conexion ->prepare($sql);
-
-            $sentencia ->bindValue(":codigoPoducto",$producto->getCodigoProducto());
-            $sentencia ->bindValue(":descripcion",$producto->getDescripcion());
-            $sentencia ->bindValue(":precio",$producto->getPrecio());
-            $sentencia ->bindValue(":stock",$producto->getStock());
-            $sentencia ->bindValue(":codigoProveedor",$proveedor->getCodigoProveedor());
-
-            $result = $sentencia->execute();
-
-            return $result;
-
         
+            // Preparar la consulta SQL
+            $sql = "INSERT INTO producto (codigoProducto, descripcion, precio, stock, codigoProveedor) VALUES (:codigoProducto, :descripcion, :precio, :stock, :codigoProveedor)";
+            $sentencia = $conexion->prepare($sql);
+        
+            $sentencia->bindValue(":codigoProducto", $producto->getCodigoProducto()); // Corregir el nombre de la columna
+            $sentencia->bindValue(":descripcion", $producto->getDescripcion());
+            $sentencia->bindValue(":precio", $producto->getPrecio());
+            $sentencia->bindValue(":stock", $producto->getStock());
+            $sentencia->bindValue(":codigoProveedor", $miProveedor->getCodigoProveedor()); // Usar $miProveedor en lugar de $proveedor
+        
+            $result = $sentencia->execute();
+        
+            return $result;
         }
 
         //Consultar producto por descripcion se le pasa el proveedor
@@ -35,7 +32,7 @@ include_once 'ProveedorDB.php';
             $conexion = Conexion::obtenerConexion();
         
             // Preparamos la consulta SQL
-            $sql = "SELECT * FROM productos WHERE descripcion = :descripcion AND codigoProveedor = :codigoProveedor";
+            $sql = "SELECT * FROM producto WHERE descripcion = :descripcion AND codigoProveedor = :codigoProveedor";
             $sentencia = $conexion->prepare($sql);
 
             $productos = [];
@@ -87,7 +84,7 @@ include_once 'ProveedorDB.php';
             $conexion = Conexion::obtenerConexion();
         
             // Modificar producto existente
-            $sql = "UPDATE productos SET descripcion = :descripcion, precio = :precio, stock = :stock WHERE codigoProducto = :codigoProducto";
+            $sql = "UPDATE producto SET descripcion = :descripcion, precio = :precio, stock = :stock WHERE codigoProducto = :codigoProducto";
             $sentencia = $conexion->prepare($sql);
 
             $result = $sentencia->execute([
@@ -108,14 +105,14 @@ include_once 'ProveedorDB.php';
             $conexion = Conexion::obtenerConexion();
         
             // Consulta para obtener productos por debajo del stock mínimo
-            $sql = "SELECT * FROM productos WHERE stock < :stockMinimo AND codigoProveedor = :codigoProveedor"; 
+            $sql = "SELECT * FROM producto WHERE stock < :stockMinimo AND codigoProveedor = :codigoProveedor"; 
             $sentencia = $conexion->prepare($sql);
-            
+
             $codigoProveedor = $proveedor->getCodigoProveedor();
 
             // Ejecutar la consulta
             $sentencia->setFetchMode(PDO::FETCH_ASSOC);
-            $sentencia->bindParam(":stock", $stock);
+            $sentencia->bindParam(":stockMinimo", $stock); // Cambiado a :stockMinimo
             $sentencia->bindParam(":codigoProveedor", $codigoProveedor); 
             $sentencia->execute();
 
@@ -136,13 +133,15 @@ include_once 'ProveedorDB.php';
         }
 
         //Función para devolver productos de un proveedor.
-        public static function get($codigoProducto): Producto {
+        public static function get(Proveedor $proveedor): array {
+            $productos = [];
+
             //Establecemos conexion
             include_once '../Conexion/conexion.php';
             $conexion = Conexion::obtenerConexion();
 
             //Preparamos la consulta
-            $sql = "SELECT * FROM producto WHERE codigoProducto = :codigoProducto";
+            $sql = "SELECT * FROM producto WHERE codigoProveedor = :codigoProveedor";
             $sentencia = $conexion->prepare($sql);
             
             // Ejecutar la consulta
@@ -173,7 +172,7 @@ include_once 'ProveedorDB.php';
             $conexion = Conexion::obtenerConexion();
         
             //Preparamos la consulta
-            $sql = "SELECT * FROM productos WHERE codigoProveedor = :codigoProveedor";
+            $sql = "SELECT * FROM producto WHERE codigoProveedor = :codigoProveedor";
             $sentencia = $conexion->prepare($sql);
             $sentencia->bindValue(":codigoProveedor", $proveedor->getCodigoProveedor()); // Asegúrate de tener un método getCodProv() en la clase Proveedor
         
@@ -193,6 +192,10 @@ include_once 'ProveedorDB.php';
 
             return $productos;
         }
+
+        
+
+        
         
 
     }

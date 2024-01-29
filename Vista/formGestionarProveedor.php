@@ -1,8 +1,6 @@
 <?php
 include_once '../Controlador/controlaProveedor.php';
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +11,7 @@ include_once '../Controlador/controlaProveedor.php';
 </head>
 <body>
     <h2>Gestion Proveedor</h2>
+    
 
     <form action="../Controlador/controlaProveedor.php" method="post">
         <label for="codigoProveedor">Código de Proveedor:</label>
@@ -42,7 +41,7 @@ include_once '../Controlador/controlaProveedor.php';
             }
         ?>
         <br>
-        <input type="submit" name="delete" value="Eliminar">
+        
         <button type="submit" name="cerrar_sesion">
             <img src="../img/cerrarSesion.png" alt="Cerrar sesión">
         </button>

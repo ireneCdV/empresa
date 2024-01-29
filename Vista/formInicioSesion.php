@@ -13,7 +13,7 @@
         <input type="text" name="codigoProveedor" required>
         <br>
         <br>
-        <label for="password">Contraseña: </label>
+        <label for="pwd">Contraseña: </label>
         <input type="password" name="pwd" required>
         <br>
         <br>

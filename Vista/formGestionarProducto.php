@@ -8,9 +8,10 @@
 </head>
 <body>
     <h2>Gestion de Productos</h2>
-    <form action="../Controlador/controlaInicioSesion.php" method="post">
+    <form action="../Controlador/controlaProducto.php" method="post">
 
         <input type="submit" name="ver_todo" value="Ver Todos">
+        <input type="submit" name="insertar" value="Insertar">
         <input type="submit" name="consultar_description" value="Consultar por Descripcion">
         <input type="submit" name="modificar" value="Modificar">
         <input type="submit" name="eliminar" value="Eliminar">

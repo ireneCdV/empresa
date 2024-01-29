@@ -17,6 +17,9 @@
         <input type="text" name="codigoProveedor" required>
         <br>
         <input type="submit" value="Mostrar Datos">
+        <button type="submit" name="cerrar_sesion">
+            <img src="../img/cerrarSesion.png" alt="Cerrar sesión">
+        </button>
     </form>
     
 </body>

@@ -12,6 +12,6 @@
         <input type="submit" name="registrar" value="Registrar">
         <input type="submit" name="iniciar_sesion" value="Iniciar sesion">
     </form>
-    
+
 </body>
 </html>
